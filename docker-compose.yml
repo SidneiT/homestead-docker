@@ -14,7 +14,8 @@ php56:
         - ./volumes/nginx/sites-enabled:/etc/nginx/sites-enabled # nginx sites ( in case you recreate the container )
         - ./volumes/nginx/ssl:/etc/nginx/ssl
     links:
-        - mysql57       
+        - mysql57     
+        - mongo37  
 
 mysql57:
     image: mysql:5.7
