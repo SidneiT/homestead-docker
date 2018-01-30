@@ -1,28 +1,33 @@
-web:
+php56:
     image: shincoder/homestead:php5.6
-    restart: always
+    container_name: "php56"
+    restart: unless-stopped
     ports:
-        - "8000:80" # web
-        - "2222:22" # ssh
-        - "35729:35729" # live reload
-        - "9876:9876" # karma server
+        - "8056:80" # web
+        - "2256:22" # ssh        
     volumes:
-        - ~/.composer:/home/homestead/.composer # composer caching
         - ~/.gitconfig:/home/homestead/.gitconfig # Git configuration ( access alias && config )
-        - ~/.ssh:/home/homestead/.ssh # Ssh keys for easy deployment inside the container
-        - ~/apps:/apps # all apps
-        - ~/apps/volumes/nginx/sites-available:/etc/nginx/sites-available # nginx sites ( in case you recreate the container )
-        - ~/apps/volumes/nginx/sites-enabled:/etc/nginx/sites-enabled # nginx sites ( in case you recreate the container )
+        - ./volumes/.composer:/home/homestead/.composer # composer caching
+        - ./volumes/.ssh:/home/homestead/.ssh # Ssh keys for easy deployment inside the container
+        - ./volumes/apps:/apps # all apps
+        - ./volumes/nginx/sites-available:/etc/nginx/sites-available # nginx sites ( in case you recreate the container )
+        - ./volumes/nginx/sites-enabled:/etc/nginx/sites-enabled # nginx sites ( in case you recreate the container )
+        - ./volumes/nginx/ssl:/etc/nginx/ssl
     links:
-        - mariadb
+        - mysql57       
 
-mariadb:
-    image: tutum/mariadb
-    restart: always
+mysql57:
+    image: mysql:5.7
+    container_name: "mysql57"
+    restart: unless-stopped
     ports:
-        - "33060:3306"
+        - "3306:3306"
     environment:
-        MARIADB_USER: admin # cannot be changed ( for info. only )
-        MARIADB_PASS: root
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     volumes:
-        - ~/apps/volumes/mysql:/var/lib/mysql # database files
+        - ./volumes/mysql:/var/lib/mysql
+
+mongo37:
+    image: mongo:3.7.1-jessie
+    restart: unless-stopped
+    container_name: "mongo37"    
