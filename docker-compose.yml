@@ -1,0 +1,35 @@
+php70:
+    image: shincoder/homestead:php7.0
+    restart: unless-stopped
+    container_name: "php70"    
+    ports:
+        - "8070:80" # web
+        - "2270:22" # ssh
+    volumes:
+        - ~/.gitconfig:/home/homestead/.gitconfig # Git configuration ( access alias && config )
+        - ./volumes/.composer:/home/homestead/.composer # composer caching
+        - ./volumes/.ssh:/home/homestead/.ssh # Ssh keys for easy deployment inside the container
+        - ./volumes/apps:/apps # all apps
+        - ./volumes/nginx/sites-available:/etc/nginx/sites-available # nginx sites ( in case you recreate the container )
+        - ./volumes/nginx/sites-enabled:/etc/nginx/sites-enabled # nginx sites ( in case you recreate the container )
+        - ./volumes/nginx/ssl:/etc/nginx/ssl
+    links:
+        - mysql57
+        - mongo37
+
+mysql57:
+    image: mysql:5.7
+    container_name: "mysql57"
+    restart: unless-stopped
+    ports:
+        - "3306:3306"
+    environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+        - ./volumes/mysql:/var/lib/mysql
+
+mongo37:
+    image: mongo:3.7.1-jessie
+    restart: unless-stopped
+    container_name: "mongo37"    
+           
